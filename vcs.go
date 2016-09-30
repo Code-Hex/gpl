@@ -15,19 +15,19 @@ import (
 var repositories = []string{".git/svn", ".git", ".svn", ".hg", "_darcs"}
 
 var doUpdate = map[string]func(string) error{
-	".git": func(gpl *Gpl, path string) error {
+	".git": func(gpl Gpl, path string) error {
 		return gpl.do(path, "git", "pull", "--ff-only")
 	},
-	".svn": func(gpl *Gpl, path string) error {
+	".svn": func(gpl Gpl, path string) error {
 		return gpl.do(path, "svn", "update")
 	},
-	".git/svn": func(gpl *Gpl, path string) error {
+	".git/svn": func(gpl Gpl, path string) error {
 		return gpl.do(path, "git", "svn", "rebase")
 	},
-	".hg": func(gpl *Gpl, path string) error {
+	".hg": func(gpl Gpl, path string) error {
 		return gpl.do(path, "hg", "pull", "--update")
 	},
-	"_darcs": func(gpl *Gpl, path string) error {
+	"_darcs": func(gpl Gpl, path string) error {
 		return gpl.do(path, "darcs", "pull")
 	},
 }
@@ -89,7 +89,7 @@ func listenCh(errCh chan error, totalPaths int) {
 }
 
 // This function execute repository update commands on your target directory.
-func (gpl *Gpl) do(path, command string, args ...string) error {
+func (gpl Gpl) do(path, command string, args ...string) error {
 	var stderr bytes.Buffer
 	cmd := exec.Command(command, args...)
 	cmd.Stderr = &stderr
