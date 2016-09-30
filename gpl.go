@@ -68,7 +68,12 @@ func (gpl *Gpl) Execute() error {
 		return errmsg(err)
 	}
 
-	if err := gpl.UpdateRepository(); err != nil {
+	dict := gpl.DetectRepository()
+	if len(dict) == 0 {
+		return errors.Errorf("There was not found repository from file path")
+	}
+
+	if err := gpl.UpdateRepository(dict); err != nil {
 		return errmsg(err)
 	}
 

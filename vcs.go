@@ -32,35 +32,51 @@ var doUpdate = map[string]func(Gpl, string) error{
 	},
 }
 
-// UpdateRepository method for update repositories
-// after detecting the kind of repositories from filepath
-func (gpl Gpl) UpdateRepository() error {
+// DetectRepository for detecting the kind of repositories from filepath
+func (gpl Gpl) DetectRepository() map[string]string {
 	var (
 		fi  os.FileInfo
 		err error
-		wg  sync.WaitGroup
 	)
 
-	semaphore := make(chan bool, gpl.CPU)
-	errCh := make(chan error)
-	go listenCh(errCh, len(gpl.TargetPaths))
+	dict := make(map[string]string)
 
-	// foreach with filepath for potential repositories
+	// filepath for potential repositories
 	for _, path := range gpl.TargetPaths {
-		// foreach with repositories
+		// repositories
 		for _, repo := range repositories {
 			fi, err = os.Stat(filepath.Join(path, repo))
 			if err == nil && fi.IsDir() {
-				wg.Add(1)
-				go func(path, repo string) {
-					defer wg.Done()
-					p(semaphore)
-					// Execute command for each repositories
-					errCh <- doUpdate[repo](gpl, path)
-					v(semaphore)
-				}(path, repo)
+				// Register repository type to dictionary
+				dict[path] = repo
+				// break the repositories foreach loop
+				break
 			}
 		}
+	}
+
+	return dict
+}
+
+// UpdateRepository method for update repositories
+func (gpl Gpl) UpdateRepository(dict map[string]string) error {
+
+	var wg sync.WaitGroup
+
+	errCh := make(chan error)
+	semaphore := make(chan bool, gpl.CPU)
+
+	go listenCh(errCh, len(gpl.TargetPaths))
+
+	for key := range dict {
+		wg.Add(1)
+		go func(path, repo string) {
+			defer wg.Done()
+			p(semaphore)
+			// Execute command for each repositories
+			errCh <- doUpdate[repo](gpl, path)
+			v(semaphore)
+		}(key, dict[key])
 	}
 	wg.Wait()
 
