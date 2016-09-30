@@ -14,7 +14,7 @@ import (
 
 var repositories = []string{".git/svn", ".git", ".svn", ".hg", "_darcs"}
 
-var doUpdate = map[string]func(string) error{
+var doUpdate = map[string]func(Gpl, string) error{
 	".git": func(gpl Gpl, path string) error {
 		return gpl.do(path, "git", "pull", "--ff-only")
 	},
@@ -96,16 +96,16 @@ func (gpl Gpl) do(path, command string, args ...string) error {
 	cmd.Dir = path
 
 	cmdStr := join(command, args, ' ')
-	fmt.Fprintf(os.Stdout, "[%s] %s (%s)\n", color.GreenString("Update"), path, cmdStr)
+	fmt.Fprintf(gpl.Stdout, "%s %s (%s)\n", color.GreenString("[Update]"), path, cmdStr)
 
 	if err := cmd.Run(); err != nil {
 		// when failed execute command
-		fmt.Fprintf(os.Stderr, "[%s] %s\n%s\n", color.RedString("Failed"), path, stderr.String())
+		fmt.Fprintf(gpl.Stderr, "%s %s\n%s\n", color.RedString("[Failed]"), path, stderr.String())
 		return err
 	}
 
 	// when finished execute command
-	fmt.Fprintf(os.Stdout, "[%s] %s (%s)\n", color.YellowString("Done"), path, cmdStr)
+	fmt.Fprintf(gpl.Stdout, "%s %s (%s)\n", color.YellowString("[Finish]"), path, cmdStr)
 
 	return nil
 }
