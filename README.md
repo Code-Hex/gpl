@@ -1,4 +1,4 @@
-gpl - Update repositories using parallel
+gpl - Update multiple local repositories with parallel
 =======
 
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
@@ -14,11 +14,13 @@ Support git, git-svn, svn, mercurial, darcs.
     gpl /user/local/project/repo1 /user/local/project/repo2
 
 If you have created such as this file
+
     cat list.txt
     /user/local/project/repo1
     /user/local/project/repo2
 
 You can do this
+
     cat list.txt | gpl
 
 ## Installation
