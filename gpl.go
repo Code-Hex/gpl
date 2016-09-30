@@ -3,6 +3,7 @@ package gpl
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"runtime"
 
@@ -12,7 +13,7 @@ import (
 
 const (
 	version = "0.0.1"
-	msg     = "gpl v" + version + ", git pull from multiple repository using parallel\n"
+	msg     = "gpl v" + version + ", Update multiple local repositories with parallel\n"
 )
 
 // Gpl struct
@@ -21,6 +22,9 @@ type Gpl struct {
 	CPU         int
 	TargetPaths []string
 	Args        []string
+	Stdin       io.Reader
+	Stdout      io.Writer
+	Stderr      io.Writer
 }
 
 type ignore struct {
@@ -34,7 +38,10 @@ type cause interface {
 // New will return Gpl struct
 func New() *Gpl {
 	return &Gpl{
-		CPU: runtime.NumCPU(),
+		Stdin:  os.Stdin,
+		Stdout: os.Stdout,
+		Stderr: os.Stderr,
+		CPU:    runtime.NumCPU(),
 	}
 }
 
@@ -43,9 +50,9 @@ func New() *Gpl {
 func (gpl *Gpl) Run() int {
 	if err := gpl.Execute(); err != nil {
 		if gpl.Trace {
-			fmt.Fprintf(os.Stderr, "Error:\n%+v\n", err)
+			fmt.Fprintf(gpl.Stderr, "Error:\n%+v\n", err)
 		} else {
-			fmt.Fprintf(os.Stderr, "Error:\n  %v\n", errmsg(err))
+			fmt.Fprintf(gpl.Stderr, "Error:\n  %v\n", errmsg(err))
 		}
 		return 1
 	}
@@ -92,7 +99,7 @@ func (gpl *Gpl) parseRepositoryPath(opts *Options) error {
 
 	// Try read from stdin if have not been set filepath on argv.
 	if len(gpl.TargetPaths) == 0 {
-		scanner := bufio.NewScanner(os.Stdin)
+		scanner := bufio.NewScanner(gpl.Stdin)
 		for scanner.Scan() {
 			filepath := scanner.Text()
 			if isPath, _ := govalidator.IsFilePath(filepath); isPath {
@@ -105,7 +112,7 @@ func (gpl *Gpl) parseRepositoryPath(opts *Options) error {
 
 	// Finally, return usage massage if have not been set filepath from stdin.
 	if len(gpl.TargetPaths) == 0 {
-		os.Stdout.Write(opts.usage())
+		gpl.Stdout.Write(opts.usage())
 		return makeIgnoreErr()
 	}
 	return nil
@@ -120,12 +127,12 @@ func (gpl *Gpl) parseOptions(opts *Options, argv []string) error {
 	}
 
 	if opts.Help {
-		os.Stdout.Write(opts.usage())
+		gpl.Stdout.Write(opts.usage())
 		return makeIgnoreErr()
 	}
 
 	if opts.Version {
-		os.Stdout.Write([]byte(msg))
+		gpl.Stdout.Write([]byte(msg))
 		return makeIgnoreErr()
 	}
 

@@ -15,20 +15,20 @@ import (
 var repositories = []string{".git/svn", ".git", ".svn", ".hg", "_darcs"}
 
 var doUpdate = map[string]func(string) error{
-	".git": func(path string) error {
-		return do(path, "git", "pull", "--ff-only")
+	".git": func(gpl *Gpl, path string) error {
+		return gpl.do(path, "git", "pull", "--ff-only")
 	},
-	".svn": func(path string) error {
-		return do(path, "svn", "update")
+	".svn": func(gpl *Gpl, path string) error {
+		return gpl.do(path, "svn", "update")
 	},
-	".git/svn": func(path string) error {
-		return do(path, "git", "svn", "rebase")
+	".git/svn": func(gpl *Gpl, path string) error {
+		return gpl.do(path, "git", "svn", "rebase")
 	},
-	".hg": func(path string) error {
-		return do(path, "hg", "pull", "--update")
+	".hg": func(gpl *Gpl, path string) error {
+		return gpl.do(path, "hg", "pull", "--update")
 	},
-	"_darcs": func(path string) error {
-		return do(path, "darcs", "pull")
+	"_darcs": func(gpl *Gpl, path string) error {
+		return gpl.do(path, "darcs", "pull")
 	},
 }
 
@@ -56,7 +56,7 @@ func (gpl Gpl) UpdateRepository() error {
 					defer wg.Done()
 					p(semaphore)
 					// Execute command for each repositories
-					errCh <- doUpdate[repo](path)
+					errCh <- doUpdate[repo](gpl, path)
 					v(semaphore)
 				}(path, repo)
 			}
@@ -89,7 +89,7 @@ func listenCh(errCh chan error, totalPaths int) {
 }
 
 // This function execute repository update commands on your target directory.
-func do(path, command string, args ...string) error {
+func (gpl *Gpl) do(path, command string, args ...string) error {
 	var stderr bytes.Buffer
 	cmd := exec.Command(command, args...)
 	cmd.Stderr = &stderr

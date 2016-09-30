@@ -1,6 +1,7 @@
 gpl - Update multiple local repositories with parallel
 =======
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/Code-Hex/gpl)](https://goreportcard.com/report/github.com/Code-Hex/gpl)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
 ## Description
@@ -24,5 +25,8 @@ You can do this
     cat list.txt | gpl
 
 ## Installation
-    go get https://github.com/Code-Hex/gpl
+    go get https://github.com/Code-Hex/gpl/cmd/gpl
+
+## Author
+[codehex](https://twitter.com/CodeHex)
 
