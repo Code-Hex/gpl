@@ -1,0 +1,22 @@
+hash: bdf5c0b43903ad8f1246f2cdfe547d87d5dcc3a4055c326109e5a2a40514e3e3
+updated: 2016-09-30T18:21:28.895002736+09:00
+imports:
+- name: github.com/asaskevich/govalidator
+  version: 593d64559f7600f29581a3ee42177f5dbded27a9
+- name: github.com/Code-Hex/gpl
+  version: 647cf8b4b6c6065e359e0b568043e0b9dca2dc5d
+- name: github.com/fatih/color
+  version: 0016e2689083bc05a71fc0bdcd75f4947f6a5182
+- name: github.com/jessevdk/go-flags
+  version: 4cc2832a6e6d1d3b815e2b9d544b2a4dfb3ce8fa
+- name: github.com/mattn/go-colorable
+  version: 6c903ff4aa50920ca86087a280590b36b3152b9c
+- name: github.com/mattn/go-isatty
+  version: 66b8e73f3f5cda9f96b69efd03dd3d7fc4a5cdb8
+- name: github.com/pkg/errors
+  version: 645ef00459ed84a119197bfb8d8205042c6df63d
+- name: golang.org/x/sys
+  version: 8f0908ab3b2457e2e15403d3697c9ef5cb4b57a9
+  subpackages:
+  - unix
+testImports: []
