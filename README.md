@@ -25,7 +25,7 @@ You can do this
     cat list.txt | gpl
 
 ## Installation
-    go get https://github.com/Code-Hex/gpl/cmd/gpl
+    go get -u github.com/Code-Hex/gpl/cmd/gpl
 
 ## Author
 [codehex](https://twitter.com/CodeHex)
