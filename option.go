@@ -29,9 +29,9 @@ func (opts *Options) parse(argv []string) ([]string, error) {
 }
 
 func (opts Options) usage() []byte {
-	buf := bytes.Buffer{}
+	buf := new(bytes.Buffer)
 
-	fmt.Fprintf(&buf, msg+
+	fmt.Fprintf(buf, msg+
 		`Usage: gpl [options] /path/to/user/project1 /path/to/user/project2
   Options:
   -h,  --help                   print usage and exit

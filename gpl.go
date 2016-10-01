@@ -70,7 +70,7 @@ func (gpl *Gpl) Execute() error {
 
 	dict := gpl.DetectRepository()
 	if len(dict) == 0 {
-		return errors.Errorf("There was not found repository from file path")
+		return errors.Errorf("There was not found repository from path")
 	}
 
 	if err := gpl.UpdateRepository(dict); err != nil {
@@ -88,7 +88,7 @@ func (gpl *Gpl) Parse() error {
 	}
 
 	if err := gpl.parseRepositoryPath(&opts); err != nil {
-		return errors.Wrap(err, "failed to parse filepath")
+		return errors.Wrap(err, "failed to parse repository path")
 	}
 
 	return nil
