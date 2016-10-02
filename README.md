@@ -7,7 +7,7 @@ gpl - Update multiple local repositories with parallel
 
 ## Description
 gpl will update your selected multiple local repositories with parallel. Support git, git-svn, svn, mercurial, darcs.  
-It was developed on the assumption that mainly to rely on other commands. Got the idea from things that I wanted to update with parallel when I used '[ghq(1)](https://github.com/motemen/ghq)` get -u' every time. But ghq(1) is great tool. So I'm expected that ghq(1) would support repository update with parallel in the future.
+It was developed on the assumption that mainly to rely on other commands. Got the idea from things that I wanted to update with parallel when I used [ghq(1)](https://github.com/motemen/ghq) every time. But ghq(1) is great tool. So I'm expected that ghq(1) would support repository update with parallel in the future.
 
 ## Synopsis
     gpl -h # help
