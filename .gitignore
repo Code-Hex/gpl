@@ -26,3 +26,5 @@ vendor
 coverage.out
 *.html
 github-token
+build
+releases
