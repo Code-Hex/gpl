@@ -2,9 +2,11 @@ package gpl
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
 	"runtime"
 
 	"github.com/asaskevich/govalidator"
@@ -25,6 +27,7 @@ type Gpl struct {
 	Stdin       io.Reader
 	Stdout      io.Writer
 	Stderr      io.Writer
+	Exec        func(string, string, ...string) (string, error)
 }
 
 type ignore struct {
@@ -42,13 +45,20 @@ func New() *Gpl {
 		Stdout: os.Stdout,
 		Stderr: os.Stderr,
 		CPU:    runtime.NumCPU(),
+		Exec: func(path, command string, args ...string) (string, error) {
+			var stderr bytes.Buffer
+			cmd := exec.Command(command, args...)
+			cmd.Stderr = &stderr
+			cmd.Dir = path
+			return stderr.String(), cmd.Run()
+		},
 	}
 }
 
 // Run is executed gpl command
 // This is main method
 func (gpl *Gpl) Run() int {
-	if err := gpl.Execute(); err != nil {
+	if err := gpl.Update(); err != nil {
 		if gpl.Trace {
 			fmt.Fprintf(gpl.Stderr, "Error:\n%+v\n", err)
 		} else {
@@ -59,11 +69,11 @@ func (gpl *Gpl) Run() int {
 	return 0
 }
 
-// Execute will be run gpl command.
+// Update will be run gpl command.
 // At first, parse command line arguments.
 // Next, will detecting kind of repositories to update local repositories.
 // Finally, update local repositories using parallel.
-func (gpl *Gpl) Execute() error {
+func (gpl *Gpl) Update() error {
 	if err := gpl.Parse(); err != nil {
 		return errmsg(err)
 	}

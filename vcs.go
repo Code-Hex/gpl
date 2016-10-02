@@ -1,10 +1,8 @@
 package gpl
 
 import (
-	"bytes"
 	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
 
 	"github.com/fatih/color"
@@ -13,7 +11,7 @@ import (
 
 var repositories = []string{".git/svn", ".git", ".svn", ".hg", "_darcs"}
 
-var doUpdate = map[string]func(Gpl, string) error{
+var DoUpdate = map[string]func(Gpl, string) error{
 	".git": func(gpl Gpl, path string) error {
 		return gpl.do(path, "git", "pull", "--ff-only")
 	},
@@ -68,7 +66,7 @@ func (gpl Gpl) UpdateRepository(dict map[string]string) error {
 		go func(path, repo string) {
 			p(semaphore)
 			// Execute command for each repositories
-			errCh <- doUpdate[repo](gpl, path)
+			errCh <- DoUpdate[repo](gpl, path)
 			v(semaphore)
 		}(key, dict[key])
 	}
@@ -104,17 +102,12 @@ func wait(errCh chan error, totalPaths int) error {
 
 // This function execute repository update commands on your target directory.
 func (gpl Gpl) do(path, command string, args ...string) error {
-	var stderr bytes.Buffer
-	cmd := exec.Command(command, args...)
-	cmd.Stderr = &stderr
-	cmd.Dir = path
-
 	cmdStr := join(command, args, ' ')
 	fmt.Fprintf(gpl.Stdout, "%s %s (%s)\n", color.GreenString("[Update]"), path, cmdStr)
 
-	if err := cmd.Run(); err != nil {
+	if reason, err := gpl.Exec(path, command, args...); err != nil {
 		// when failed execute command
-		fmt.Fprintf(gpl.Stderr, "%s %s\n%s\n", color.RedString("[Failed]"), path, stderr.String())
+		fmt.Fprintf(gpl.Stderr, "%s %s\n%s\n", color.RedString("[Failed]"), path, reason)
 		return err
 	}
 
