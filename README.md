@@ -31,6 +31,9 @@ The most recommended is this combination
 ## Installation
     go get -u github.com/Code-Hex/gpl/cmd/gpl
 
+## Binary
+You can download binaries from [here](https://github.com/Code-Hex/gpl/releases/)
+
 ## Author
 [codehex](https://twitter.com/CodeHex)
 
