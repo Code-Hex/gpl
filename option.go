@@ -32,7 +32,10 @@ func (opts Options) usage() []byte {
 	buf := new(bytes.Buffer)
 
 	fmt.Fprintf(buf, msg+
-		`Usage: gpl [options] /path/to/user/project1 /path/to/user/project2
+		`Usage: 
+  $ gpl [options] /your/project1 /your/project2 ...
+  $ [commands] | gpl
+
   Options:
   -h,  --help                   print usage and exit
   -v,  --version                display the version of gpl and exit
