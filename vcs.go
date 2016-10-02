@@ -6,7 +6,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"sync"
 
 	"github.com/fatih/color"
 	"github.com/pkg/errors"
@@ -58,32 +57,31 @@ func (gpl Gpl) DetectRepository() map[string]string {
 	return dict
 }
 
-// UpdateRepository method for update repositories
+// UpdateRepository for update repositories
 func (gpl Gpl) UpdateRepository(dict map[string]string) error {
 
-	var wg sync.WaitGroup
-
 	errCh := make(chan error)
+	// Counting semaphore
 	semaphore := make(chan bool, gpl.CPU)
 
-	go listenCh(errCh, len(gpl.TargetPaths))
-
 	for key := range dict {
-		wg.Add(1)
 		go func(path, repo string) {
-			defer wg.Done()
 			p(semaphore)
 			// Execute command for each repositories
 			errCh <- doUpdate[repo](gpl, path)
 			v(semaphore)
 		}(key, dict[key])
 	}
-	wg.Wait()
 
-	return <-errCh
+	err := wait(errCh, len(gpl.TargetPaths))
+
+	close(semaphore)
+	close(errCh)
+
+	return err
 }
 
-func listenCh(errCh chan error, totalPaths int) {
+func wait(errCh chan error, totalPaths int) error {
 	errCount := 0
 	for i := 0; i < totalPaths; i++ {
 		if err := <-errCh; err != nil {
@@ -98,10 +96,10 @@ func listenCh(errCh chan error, totalPaths int) {
 		} else {
 			word = "repositories"
 		}
-		errCh <- errors.Errorf("There was an error in the %d %s update", errCount, word)
-	} else {
-		errCh <- nil
+		return errors.Errorf("There was an error in the %d %s update", errCount, word)
 	}
+
+	return nil
 }
 
 // This function execute repository update commands on your target directory.
