@@ -11,6 +11,7 @@ import (
 
 var repositories = []string{".git/svn", ".git", ".svn", ".hg", "_darcs"}
 
+// DoUpdate for will update each repositories
 var DoUpdate = map[string]func(Gpl, string) error{
 	".git": func(gpl Gpl, path string) error {
 		return gpl.do(path, "git", "pull", "--ff-only")
