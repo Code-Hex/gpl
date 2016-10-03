@@ -72,7 +72,7 @@ lint: deps
 	golint $$dir; \
 	done;
 
-cover: deps
+cover:
 	goveralls
 
 .PHONY: test deps lint cover
