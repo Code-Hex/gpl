@@ -24,7 +24,7 @@ You can do this
 
     cat list.txt | gpl
 
-The most recommended is this combination
+The most recommended is this combination with ghq and [peco](https://github.com/peco/peco)
 
     ghq list -p | peco | gpl
 
