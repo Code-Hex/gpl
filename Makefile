@@ -56,14 +56,12 @@ deps: glide
 	go get github.com/mitchellh/gox
 
 $(SUB_BIN)/$(GOOS)/$(GOARCH)/glide:
-ifndef HAS_GLIDE
 	@mkdir -p $(SUB_BIN)/$(GOOS)/$(GOARCH)
 	@curl -L https://github.com/Masterminds/glide/releases/download/v0.11.0/glide-v0.11.0-$(GOOS)-$(GOARCH).zip -o glide.zip
 	@unzip glide.zip
 	@mv ./$(GOOS)-$(GOARCH)/glide $(SUB_BIN)/$(GOOS)/$(GOARCH)/glide
 	@rm -rf ./$(GOOS)-$(GOARCH)
 	@rm ./glide.zip
-endif
 
 glide: $(SUB_BIN)/$(GOOS)/$(GOARCH)/glide
 
