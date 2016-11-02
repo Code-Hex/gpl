@@ -25,3 +25,6 @@ _testmain.go
 vendor
 coverage.out
 *.html
+github-token
+build
+releases

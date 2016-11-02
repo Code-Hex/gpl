@@ -21,15 +21,15 @@ func TestVCS(t *testing.T) {
 
 	CreateFakeRepositories()
 
-	fake_repos := FakeRepositories()
-	for path := range fake_repos {
+	fakeRepos := FakeRepositories()
+	for path := range fakeRepos {
 		gpl.TargetPaths = append(gpl.TargetPaths, path)
 	}
 
 	// Testing DetectRepository()
 	dict := gpl.DetectRepository()
-	for path := range fake_repos {
-		expected := fake_repos[path]
+	for path := range fakeRepos {
+		expected := fakeRepos[path]
 		assert.Equal(t, expected, dict[path], "failed to detect repository type: "+expected)
 	}
 
