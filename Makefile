@@ -41,7 +41,7 @@ release-upload: prepare-github release
 	@echo "Uploading..."
 	@ghr -u $(GITHUB_USERNAME) -t $(shell cat github-token) --draft --replace $(VERSION) $(RELEASE)
 
-all: test
+all:
 	@PATH=$(SUB_BIN)/$(GOOS)/$(GOARCH):$(PATH)
 	@gox -os=$(XC_OS) -arch=$(XC_ARCH) -output="build/$(VERSION)/{{.OS}}_{{.Arch}}/{{.Dir}}" $(CMDPATH)
 
