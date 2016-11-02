@@ -22,11 +22,11 @@ If you have created such as this file
 
 You can do this
 
-    cat list.txt | gpl
+    cat list.txt | gpl -s
 
 The most recommended is this combination with ghq and [peco](https://github.com/peco/peco)
 
-    ghq list -p | peco | gpl
+    ghq list -p | peco | gpl -s
 
 ## Installation
     go get -u github.com/Code-Hex/gpl/cmd/gpl
