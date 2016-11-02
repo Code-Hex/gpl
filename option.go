@@ -11,9 +11,10 @@ import (
 
 // Options struct for parse command line arguments
 type Options struct {
-	Help    bool `short:"h" long:"help" description:"print usage and exit"`
-	Version bool `short:"v" long:"version" description:"display the version of gpl and exit"`
-	Trace   bool `long:"trace" description:"display detail error messages"`
+	Help    bool `short:"h" long:"help"`
+	Version bool `short:"v" long:"version"`
+	Stdin   bool `short:"s" long:"stdin"`
+	Trace   bool `long:"trace"`
 }
 
 func (opts *Options) parse(argv []string) ([]string, error) {
@@ -34,12 +35,13 @@ func (opts Options) usage() []byte {
 	fmt.Fprintf(buf, msg+
 		`Usage: 
   $ gpl [options] /your/project1 /your/project2 ...
-  $ [commands] | gpl
+  $ [commands] | gpl [-s|--stdin]
 
   Options:
-  -h,  --help                   print usage and exit
-  -v,  --version                display the version of gpl and exit
-  --trace                       display detail error messages
+  -h,  --help               print usage and exit
+  -v,  --version            display the version of gpl and exit
+  -s,  --stdin              read target directories from stdin
+  --trace                   display detail error messages
 `)
 	return buf.Bytes()
 }

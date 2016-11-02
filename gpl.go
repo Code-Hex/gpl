@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	version = "0.0.1"
+	version = "0.0.2"
 	msg     = "gpl v" + version + ", Update multiple local repositories with parallel\n"
 )
 
@@ -113,7 +113,7 @@ func (gpl *Gpl) parseRepositoryPath(opts *Options) error {
 	}
 
 	// Try read from stdin if have not been set filepath on argv.
-	if len(gpl.TargetPaths) == 0 {
+	if opts.Trace {
 		scanner := bufio.NewScanner(gpl.Stdin)
 		for scanner.Scan() {
 			filepath := scanner.Text()
@@ -125,10 +125,8 @@ func (gpl *Gpl) parseRepositoryPath(opts *Options) error {
 
 	removeDuplicates(&gpl.TargetPaths)
 
-	// Finally, return usage massage if have not been set filepath from stdin.
 	if len(gpl.TargetPaths) == 0 {
-		gpl.Stdout.Write(opts.usage())
-		return makeIgnoreErr()
+		gpl.TargetPaths = append(gpl.TargetPaths, ".")
 	}
 	return nil
 }
