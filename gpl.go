@@ -46,11 +46,18 @@ func New() *Gpl {
 		Stderr: os.Stderr,
 		CPU:    runtime.NumCPU(),
 		Exec: func(path, command string, args ...string) (string, error) {
-			var stderr bytes.Buffer
+			var (
+				stderr bytes.Buffer
+				stdout bytes.Buffer
+			)
 			cmd := exec.Command(command, args...)
+			cmd.Stdout = &stdout
 			cmd.Stderr = &stderr
 			cmd.Dir = path
-			return stderr.String(), cmd.Run()
+			if len(stderr.String()) > 0 {
+				return stderr.String(), cmd.Run()
+			}
+			return stdout.String(), cmd.Run()
 		},
 	}
 }
