@@ -120,7 +120,7 @@ func (gpl *Gpl) parseRepositoryPath(opts *Options) error {
 	}
 
 	// Try read from stdin if have not been set filepath on argv.
-	if opts.Trace {
+	if opts.Stdin {
 		scanner := bufio.NewScanner(gpl.Stdin)
 		for scanner.Scan() {
 			filepath := scanner.Text()
